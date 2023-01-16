@@ -7,28 +7,34 @@ import sys
 from data_prep.wgisd_utils import init_dataset
 from dataviz import visualize_loss_plot
 
+from params import get_parser
+
 def main():
 
-    #params #TODO read through argparse and from params.py
-    variety = ''  # grape variety
-    dtrain_name = '_%s' % variety
-    dval_name = '_%s'% variety
+    parser = get_parser()
+    args_dict, unknown = parser.parse_known_args()
 
-    training_annp = './data/wgisd_split_byvariety/trainval/output/train/annotations_%s.json' % variety
-    training_imgs = './data/wgisd_split_byvariety/trainval/output/train/%s/' % variety
-    val_annp = './data/wgisd_split_byvariety/trainval/output/val/annotations_%s.json' % variety
-    val_imgs = './data/wgisd_split_byvariety/trainval/output/val/%s/' % variety
+    #params
+    variety = args_dict.variety  # grape variety
+    dtrain_name = args_dict.dataset + '_train_%s' % variety
+    dval_name = args_dict.dataset + '_val_%s'% variety
+
+    training_annp = os.path.join(args_dict.trainval_path, 'train/annotations_%s.json' % variety)
+    training_imgs = os.path.join(args_dict.trainval_path, 'train/%s/' % variety)
+    val_annp = os.path.join(args_dict.trainval_path,'val/annotations_%s.json' % variety)
+    val_imgs = os.path.join(args_dict.trainval_path,'val/%s/' % variety)
 
     init_dataset(dtrain_name,training_annp, training_imgs)
+    init_dataset(dval_name,val_annp, val_imgs)
 
     #Load model config
     cfg = get_cfg()
-    custom_cfg = 'Misc/mask_rcnn_R_50_SFT_3x_WGISD.yaml' #custom config in our detectron2 fork
+    custom_cfg = args_dict.model_cfg #custom config in our detectron2 fork
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
 
     cfg.DATASETS.TRAIN = (dtrain_name,)
     cfg.DATASETS.TEST = (dval_name,)
-    cfg.OUTPUT_DIR = "./RGB_MaskRCNN_SFT_wgisd_output_%s" % variety
+    cfg.OUTPUT_DIR = args_dict.out_dir +"%s" % variety
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     trainer = Trainer(cfg)
