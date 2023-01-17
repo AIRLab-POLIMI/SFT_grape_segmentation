@@ -17,7 +17,7 @@ def main():
     args_dict, unknown = parser.parse_known_args()
 
     #Init test set
-    variety = ''  # grape variety
+    variety = args_dict.var  # grape variety
     dtest_name = '_%s' % variety
     test_annp = os.path.join(args_dict.test_path,'annotations_%s.json' % variety)
     test_imgp = os.path.join(args_dict.trainval_path,'images/%s/' % variety)
@@ -28,6 +28,7 @@ def main():
     custom_cfg = args_dict.model_cfg  # custom config in our detectron2 fork
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
     cfg.OUTPUT_DIR = args_dict.out_dir + "%s" % variety
+
 
     cfg_test = cfg
     cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")

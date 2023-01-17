@@ -9,13 +9,14 @@ from dataviz import visualize_loss_plot
 
 from params import get_parser
 
+
 def main():
 
     parser = get_parser()
     args_dict, unknown = parser.parse_known_args()
 
     #params
-    variety = args_dict.variety  # grape variety
+    variety = args_dict.var  # grape variety
     dtrain_name = args_dict.dataset + '_train_%s' % variety
     dval_name = args_dict.dataset + '_val_%s'% variety
 
@@ -40,7 +41,7 @@ def main():
     trainer = Trainer(cfg)
     trainer.resume_or_load(resume=False)
 
-    """
+    
     #Uncomment to check which parameters will be tuned
 
     from detectron2.modeling import build_model
@@ -52,7 +53,7 @@ def main():
             print(name)
             cnt += 1
     print("%i parameters to be updated" % cnt)
-    """
+    
 
     trainer.train() #training starts here
 
