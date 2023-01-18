@@ -42,7 +42,10 @@ def main():
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
 
     cfg.DATASETS.TRAIN = (dtrain_name,)
-    if variety !='all': cfg.DATASETS.TEST = (dval_name,)
+    if variety !='all': 
+        cfg.DATASETS.TEST = (dval_name,)
+    else:
+        cfg.DATASETS.TEST = ()
     cfg.OUTPUT_DIR = args_dict.out_dir +"%s" % variety
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)

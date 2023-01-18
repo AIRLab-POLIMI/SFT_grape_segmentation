@@ -208,7 +208,7 @@ class Trainer(DefaultTrainer):
             self._last_eval_results = self.test(self.cfg, self.model)
             return self._last_eval_results
 
-        # Do evaluation after checkpointer, because then if it fails,
+        """# Do evaluation after checkpointer, because then if it fails,
         # we can use the saved checkpoint to debug.
         ret.append(hooks.EvalHook(cfg.TEST.EVAL_PERIOD, test_and_save_results))
         ret.append(hooks.BestCheckpointer(cfg.TEST.EVAL_PERIOD, self.checkpointer, "bbox/AP50", "max",
@@ -221,7 +221,7 @@ class Trainer(DefaultTrainer):
                                 build_detection_test_loader(self.cfg, self.cfg.DATASETS.TEST[0], mapper)))
         ret.append(hooks.BestCheckpointer(cfg.TEST.EVAL_PERIOD, self.checkpointer, "validation_loss", "min",
                                           file_prefix="model_valLoss"))
-
+        """
         if comm.is_main_process():
             # Here the default print/log frequency of each writer is used.
             # run writers in the end, so that evaluation metrics are written

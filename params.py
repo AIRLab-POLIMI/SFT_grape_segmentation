@@ -15,5 +15,7 @@ def get_parser():
     parser.add_argument('--out_dir', default='../data/RGB_MaskRCNN_SFT_wgisd_output_',
                         help='output dir for results')
     parser.add_argument('--dataset', default='wgisd',)
+    parser.add_argument('--conf_thresh', default=0.9, type=float,
+                        help='Confidence threshold for grape class on inference')
 
     return parser
