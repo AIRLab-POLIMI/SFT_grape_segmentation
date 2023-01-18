@@ -19,8 +19,13 @@ def main():
     variety = args_dict.var  # grape variety
     dtrain_name = args_dict.dataset + '_train_%s' % variety
 
-    training_annp = os.path.join(args_dict.trainval_path, 'train/annotations_%s.json' % variety)
-    training_imgs = os.path.join(args_dict.trainval_path, 'train/%s/' % variety)
+    if variety != 'all':
+        training_annp = os.path.join(args_dict.trainval_path, 'train/annotations_%s.json' % variety)
+        training_imgs = os.path.join(args_dict.trainval_path, 'train/%s/' % variety)
+    else:
+        training_annp = os.path.join(args_dict.trainval_path, 'annotations.json')
+        training_imgs = os.path.join(args_dict.trainval_path, 'images')
+
     init_dataset(dtrain_name, training_annp, training_imgs)
     withval =True
 

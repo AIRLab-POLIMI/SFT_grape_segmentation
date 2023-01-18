@@ -19,8 +19,12 @@ def main():
     #Init test set
     variety = args_dict.var  # grape variety
     dtest_name = '_%s' % variety
-    test_annp = os.path.join(args_dict.test_path,'annotations_%s.json' % variety)
-    test_imgp = os.path.join(args_dict.trainval_path,'images/%s/' % variety)
+    if variety!='all':
+        test_annp = os.path.join(args_dict.test_path,'annotations_%s.json' % variety)
+        test_imgp = os.path.join(args_dict.trainval_path,'images/%s/' % variety)
+    else:
+        test_annp = os.path.join(args_dict.test_path, 'annotations.json')
+        test_imgp = os.path.join(args_dict.trainval_path, 'images')
     init_dataset(dtest_name, test_annp, test_imgp)
 
     #Load model
