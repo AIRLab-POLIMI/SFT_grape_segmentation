@@ -18,15 +18,18 @@ def main():
     #params
     variety = args_dict.var  # grape variety
     dtrain_name = args_dict.dataset + '_train_%s' % variety
-    dval_name = args_dict.dataset + '_val_%s'% variety
 
     training_annp = os.path.join(args_dict.trainval_path, 'train/annotations_%s.json' % variety)
     training_imgs = os.path.join(args_dict.trainval_path, 'train/%s/' % variety)
-    val_annp = os.path.join(args_dict.trainval_path,'val/annotations_%s.json' % variety)
-    val_imgs = os.path.join(args_dict.trainval_path,'val/%s/' % variety)
+    init_dataset(dtrain_name, training_annp, training_imgs)
+    withval =True
 
-    init_dataset(dtrain_name,training_annp, training_imgs)
-    init_dataset(dval_name,val_annp, val_imgs)
+    if variety != 'all':
+        dval_name = args_dict.dataset + '_val_%s' % variety
+        val_annp = os.path.join(args_dict.trainval_path,'val/annotations_%s.json' % variety)
+        val_imgs = os.path.join(args_dict.trainval_path,'val/%s/' % variety)
+        init_dataset(dval_name,val_annp, val_imgs)
+        withval = False
 
     #Load model config
     cfg = get_cfg()
@@ -34,14 +37,13 @@ def main():
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
 
     cfg.DATASETS.TRAIN = (dtrain_name,)
-    cfg.DATASETS.TEST = (dval_name,)
+    if variety !='all': cfg.DATASETS.TEST = (dval_name,)
     cfg.OUTPUT_DIR = args_dict.out_dir +"%s" % variety
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     trainer = Trainer(cfg)
     trainer.resume_or_load(resume=False)
 
-    
     #Uncomment to check which parameters will be tuned
 
     from detectron2.modeling import build_model
@@ -57,7 +59,7 @@ def main():
 
     trainer.train() #training starts here
 
-    visualize_loss_plot(cfg.OUTPUT_DIR)
+    visualize_loss_plot(cfg.OUTPUT_DIR, val_loss=withval)
 
 
 if __name__ == "__main__":

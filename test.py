@@ -32,6 +32,8 @@ def main():
 
     cfg_test = cfg
     cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
+    cfg.DATASETS.TEST = (dtest_name,)
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.9
 
     predictor = DefaultPredictor(cfg_test)
     # TODO add custom metrics
