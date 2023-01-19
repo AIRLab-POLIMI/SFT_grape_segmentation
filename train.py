@@ -26,14 +26,14 @@ def main():
         training_annp = os.path.join(args_dict.trainval_path, 'annotations.json')
         training_imgs = os.path.join(args_dict.trainval_path, 'images')
 
-    init_dataset(dtrain_name, training_annp, training_imgs)
+    _,_= init_dataset(dtrain_name, training_annp, training_imgs)
     withval =True
 
     if variety != 'all':
         dval_name = args_dict.dataset + '_val_%s' % variety
         val_annp = os.path.join(args_dict.trainval_path,'val/annotations_%s.json' % variety)
         val_imgs = os.path.join(args_dict.trainval_path,'val/%s/' % variety)
-        init_dataset(dval_name,val_annp, val_imgs)
+        _,_= init_dataset(dval_name,val_annp, val_imgs)
         withval = False
 
     #Load model config

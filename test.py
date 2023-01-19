@@ -26,7 +26,7 @@ def main():
     else:
         test_annp = os.path.join(args_dict.test_path, 'annotations.json')
         test_imgp = os.path.join(args_dict.test_path, 'images')
-    init_dataset(dtest_name, test_annp, test_imgp)
+    _,_ = init_dataset(dtest_name, test_annp, test_imgp)
 
     #Load model
     cfg = get_cfg()

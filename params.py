@@ -17,5 +17,7 @@ def get_parser():
     parser.add_argument('--dataset', default='wgisd',)
     parser.add_argument('--conf_thresh', default=0.9, type=float,
                         help='Confidence threshold for grape class on inference')
+    parser.add_argument('--pred_path', default=None,
+                        help='Path to pth file with model predictions')
 
     return parser
