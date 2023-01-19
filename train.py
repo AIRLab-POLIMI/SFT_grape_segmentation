@@ -49,9 +49,13 @@ def main():
     cfg.OUTPUT_DIR = args_dict.out_dir +"%s" % variety
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+    
+    if args_dict.train_mode =='tune':
+        cfg.MODEL.WEIGHTS ='../data/models_ceruti_final/split_80/model_RGB.pth'
+    
     trainer = Trainer(cfg)
-    trainer.resume_or_load(resume=False)
-
+ 
+    trainer.resume_or_load(resume=False) 
     #Uncomment to check which parameters will be tuned
 
     from detectron2.modeling import build_model
@@ -64,7 +68,6 @@ def main():
             cnt += 1
     print("%i parameters to be updated" % cnt)
     
-
     trainer.train() #training starts here
 
     visualize_loss_plot(cfg.OUTPUT_DIR, val_loss=withval)

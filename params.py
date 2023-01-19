@@ -17,5 +17,7 @@ def get_parser():
     parser.add_argument('--dataset', default='wgisd',)
     parser.add_argument('--conf_thresh', default=0.9, type=float,
                         help='Confidence threshold for grape class on inference')
+    parser.add_argument('--train_mode', default='tune', choices=['tune','scratch'],
+                        help='Whether to fine-tune or re-train from scratch')
 
     return parser
