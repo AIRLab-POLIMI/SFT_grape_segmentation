@@ -7,6 +7,7 @@ import sys
 from data_prep.wgisd_utils import init_dataset
 from dataviz import visualize_loss_plot
 
+from detectron2.modeling import build_model
 from params import get_parser
 
 
@@ -58,16 +59,13 @@ def main():
     trainer.resume_or_load(resume=False) 
     #Uncomment to check which parameters will be tuned
 
-    from detectron2.modeling import build_model
     model = build_model(cfg)
-
-    cnt = 0
-    for name, param in model.named_parameters():
-        if param.requires_grad:
+    print("Tuned modules:")
+    for name, p in model.named_parameters():
+        if p.requires_grad: 
             print(name)
-            cnt += 1
-    print("%i parameters to be updated" % cnt)
-    
+    total_params  = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print("No of parameters to update: %i" % total_params)
     trainer.train() #training starts here
 
     visualize_loss_plot(cfg.OUTPUT_DIR, val_loss=withval)
