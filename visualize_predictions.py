@@ -32,7 +32,6 @@ def main():
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
     cfg.OUTPUT_DIR = args_dict.out_dir + "%s" % variety
 
-
     cfg_test = cfg
     cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") #'../data/models_ceruti_final/split_80/model_RGB.pth' 
     cfg_test.DATASETS.TEST = (dtest_name,)
