@@ -19,5 +19,6 @@ def get_parser():
                         help='Confidence threshold for grape class on inference')
     parser.add_argument('--pred_path', default=None,
                         help='Path to pth file with model predictions')
-
+    parser.add_argument('--train_mode', default='tune', choices=['tune','scratch'],
+                        help='Whether to fine-tune or re-train from scratch')
     return parser
