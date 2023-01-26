@@ -8,7 +8,7 @@ from params import get_parser
 
 def select_dataset(var, view, defol):
 
-    with open('../data/cattolica2022_dataindex.json') as ind:
+    with open('./data/cattolica2022_dataindex.json') as ind:
         data_index = json.load(ind)['datasets']
 
     tgt_fol = None

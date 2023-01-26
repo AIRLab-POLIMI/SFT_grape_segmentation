@@ -28,11 +28,11 @@ def main():
             print("No dataset with required features found")
             return
 
-        basep = os.path.join(args_dict.trainval_path, subfolder) #/path/to/vine_cvat_subset_rotated_split
-        training_annp = os.path.join(basep, 'train/annotations.json')
-        training_imgs = os.path.join(basep, 'train')
-        val_annp = os.path.join(basep, 'val/annotations.json')
-        val_imgs = os.path.join(basep, 'val')
+        basep = args_dict.trainval_path  # /path/to/vine_cvat_subset_rotated_split
+        training_annp = os.path.join(basep, 'train', subfolder, 'annotations.json')
+        training_imgs = os.path.join(basep, 'train', subfolder)
+        val_annp = os.path.join(basep, 'val', subfolder, 'annotations.json')
+        val_imgs = os.path.join(basep, 'val', subfolder)
 
     else:
         training_annp = os.path.join(args_dict.trainval_path, 'annotations.json')
@@ -40,8 +40,8 @@ def main():
         val_annp = os.path.join(args_dict.trainval_path, 'val/annotations_%s.json' % variety)
         val_imgs = os.path.join(args_dict.trainval_path, 'val/%s/' % variety)
 
-    _,_= init_dataset(dtrain_name, training_annp, training_imgs)
-    _,_= init_dataset(dval_name,val_annp, val_imgs)
+    _, _ = init_dataset(dtrain_name, training_annp, training_imgs, data=args_dict.dataset)
+    _, _ = init_dataset(dval_name, val_annp, val_imgs, data=args_dict.dataset)
 
     #Load model config
     cfg = get_cfg()

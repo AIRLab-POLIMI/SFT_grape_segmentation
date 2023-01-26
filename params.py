@@ -8,7 +8,7 @@ def get_parser():
                         help='Path to train and val splits and annotations')
     parser.add_argument('--test_path', default='./data/wgisd_split_byvariety/test/',
                         help='Path to test splits and annotations')
-    parser.add_argument('--var', default='CSV', choices=['CDY', 'CFR', 'CSV', 'SVB', 'SYH','all'
+    parser.add_argument('--var', default='CSV', choices=['CDY', 'CFR', 'CSV', 'SVB', 'SYH','all',
                                                          'red_globe', 'white_ortrugo', 'cabernet_sauvignon'],
                         help='Grape variety')
     parser.add_argument('--model_cfg', default='Misc/mask_rcnn_R_50_SFT_3x_WGISD.yaml',
