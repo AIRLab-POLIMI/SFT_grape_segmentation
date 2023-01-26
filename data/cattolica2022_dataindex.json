@@ -1,0 +1,81 @@
+{
+  "datasets": [
+
+    {"bagname":"2022-08-23-12-23-31",
+    "variety":  "red_globe",
+    "viewpoint": 45,
+    "defoliation":  0},
+
+    {"bagname":"2022-08-23-12-32-48",
+    "variety":  "red_globe",
+    "viewpoint": 90,
+    "defoliation":  0},
+
+    {"bagname":"2022-08-23-14-17-26",
+    "variety":  "red_globe",
+    "viewpoint": 90,
+    "defoliation":  1},
+
+    {"bagname":"2022-08-23-14-32-03",
+    "variety":  "red_globe",
+    "viewpoint": 45,
+    "defoliation":  1},
+
+    {"bagname":"2022-08-23-15-22-59",
+    "variety":  "white_ortrugo",
+    "viewpoint": 45,
+    "defoliation":  0},
+
+    {"bagname":"2022-08-23-15-32-40",
+    "variety":  "white_ortrugo",
+    "viewpoint": 90,
+    "defoliation":  0},
+
+    {"bagname":"2022-08-23-17-02-58",
+    "variety":  "white_ortrugo",
+    "viewpoint": 45,
+    "defoliation":  1},
+
+    {"bagname":"2022-08-23-17-46-30",
+    "variety":  "white_ortrugo",
+    "viewpoint": 45,
+    "defoliation":  2},
+
+    {"bagname":"2022-08-23-17-53-22",
+    "variety":  "white_ortrugo",
+    "viewpoint": 90,
+    "defoliation":  2},
+
+    {"bagname":"2022-09-15-12-13-19",
+    "variety":  "cabernet_sauvignon",
+    "viewpoint": 90,
+    "defoliation":  0},
+
+    {"bagname":"2022-09-15-12-20-49",
+    "variety":  "cabernet_sauvignon",
+    "viewpoint": 45,
+    "defoliation":  0},
+
+    {"bagname":"2022-09-15-13-08-12",
+    "variety":  "cabernet_sauvignon",
+    "viewpoint": 45,
+    "defoliation":  1},
+
+    {"bagname":"2022-09-15-13-14-36",
+    "variety":  "cabernet_sauvignon",
+    "viewpoint": 90,
+    "defoliation":  1},
+
+    {"bagname":"2022-09-15-14-02-31",
+    "variety":  "cabernet_sauvignon",
+    "viewpoint": 90,
+    "defoliation":  2},
+
+    {"bagname":"2022-09-15-14-08-23",
+    "variety":  "cabernet_sauvignon",
+    "viewpoint": 45,
+    "defoliation":  2}
+  ]
+
+
+}

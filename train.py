@@ -9,7 +9,7 @@ from dataviz import visualize_loss_plot
 
 from detectron2.modeling import build_model
 from params import get_parser
-
+from data_prep.cattolica_utils import select_dataset
 
 def main():
 
@@ -19,23 +19,29 @@ def main():
     #params
     variety = args_dict.var  # grape variety
     dtrain_name = args_dict.dataset + '_train_%s' % variety
+    dval_name = args_dict.dataset + '_val_%s' % variety
 
-    if variety != 'all':
-        training_annp = os.path.join(args_dict.trainval_path, 'train/annotations_%s.json' % variety)
-        training_imgs = os.path.join(args_dict.trainval_path, 'train/%s/' % variety)
+    if args_dict.dataset== 'cattolica22':
+        #select subset of data based on variety, viewpoint and defoliation
+        subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
+        if subfolder is None:
+            print("No dataset with required features found")
+            return
+
+        basep = os.path.join(args_dict.trainval_path, subfolder) #/path/to/vine_cvat_subset_rotated_split
+        training_annp = os.path.join(basep, 'train/annotations.json')
+        training_imgs = os.path.join(basep, 'train')
+        val_annp = os.path.join(basep, 'val/annotations.json')
+        val_imgs = os.path.join(basep, 'val')
+
     else:
         training_annp = os.path.join(args_dict.trainval_path, 'annotations.json')
         training_imgs = os.path.join(args_dict.trainval_path, 'images')
+        val_annp = os.path.join(args_dict.trainval_path, 'val/annotations_%s.json' % variety)
+        val_imgs = os.path.join(args_dict.trainval_path, 'val/%s/' % variety)
 
     _,_= init_dataset(dtrain_name, training_annp, training_imgs)
-    withval =True
-
-    if variety != 'all':
-        dval_name = args_dict.dataset + '_val_%s' % variety
-        val_annp = os.path.join(args_dict.trainval_path,'val/annotations_%s.json' % variety)
-        val_imgs = os.path.join(args_dict.trainval_path,'val/%s/' % variety)
-        _,_= init_dataset(dval_name,val_annp, val_imgs)
-        withval = False
+    _,_= init_dataset(dval_name,val_annp, val_imgs)
 
     #Load model config
     cfg = get_cfg()
@@ -47,13 +53,14 @@ def main():
         cfg.DATASETS.TEST = (dval_name,)
     else:
         cfg.DATASETS.TEST = ()
-    cfg.OUTPUT_DIR = args_dict.out_dir +"%s" % variety
+    cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s" % (args_dict.dataset, variety)
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
     if args_dict.train_mode =='tune':
         cfg.MODEL.WEIGHTS ='../data/models_ceruti_final/split_80/model_RGB.pth'
-    
+        #otherwise, model is trained without adding pre-trained weights
+
     trainer = Trainer(cfg)
  
     trainer.resume_or_load(resume=False) 
@@ -68,7 +75,7 @@ def main():
     print("No of parameters to update: %i" % total_params)
     trainer.train() #training starts here
 
-    visualize_loss_plot(cfg.OUTPUT_DIR, val_loss=withval)
+    visualize_loss_plot(cfg.OUTPUT_DIR)
 
 
 if __name__ == "__main__":
