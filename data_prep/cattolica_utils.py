@@ -40,6 +40,7 @@ def subset_annotations(tgt_dirname, jpath):
     for d_ in all_annotations['images']:
         img_name = d_["file_name"].split('/')[-1]
         if img_name in imglist:
+            d_["file_name"] = img_name
             ann_subset['images'].append(d_)
             img_id = d_["id"]
             a_ = [ann for ann in all_annotations['annotations'] if ann['image_id'] == img_id][0]

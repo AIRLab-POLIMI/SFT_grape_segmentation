@@ -20,10 +20,10 @@ def get_parser():
                         help='Confidence threshold for grape class on inference')
     parser.add_argument('--pred_path', default=None,
                         help='Path to pth file with model predictions')
-    parser.add_argument('--train_mode', default='tune', choices=['tune','scratch'],
-                        help='Whether to fine-tune or re-train from scratch')
-    parser.add_argument('--view', default=45,
+    parser.add_argument('--view', default=45, type=int,
                         help='Degrees indicating camera viewpoint')
-    parser.add_argument('--defol', default=0, choices=[0,1,2],
+    parser.add_argument('--defol', default=0, type=int, choices=[0,1,2],
                         help='Levels of defoliation, where 0 is no defoliation')
+    parser.add_argument('--weights', default=None,
+                        help='Path to model weights if fine-tuning is applied')
     return parser

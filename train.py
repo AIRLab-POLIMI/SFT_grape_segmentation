@@ -49,16 +49,14 @@ def main():
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
 
     cfg.DATASETS.TRAIN = (dtrain_name,)
-    if variety !='all': 
-        cfg.DATASETS.TEST = (dval_name,)
-    else:
-        cfg.DATASETS.TEST = ()
+    cfg.DATASETS.TEST = (dval_name,)
+
     cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s" % (args_dict.dataset, variety)
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
-    if args_dict.train_mode =='tune':
-        cfg.MODEL.WEIGHTS ='../data/models_ceruti_final/split_80/model_RGB.pth'
+    if args_dict.weights is not None:
+        cfg.MODEL.WEIGHTS = args_dict.weights #'../data/models_ceruti_final/split_80/model_RGB.pth'
         #otherwise, model is trained without adding pre-trained weights
 
     trainer = Trainer(cfg)
