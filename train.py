@@ -3,23 +3,36 @@ from modules.det2modules import Trainer
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
 import sys
+import logging
 
 from data_prep.wgisd_utils import init_dataset
-from dataviz import visualize_loss_plot
+#from dataviz import visualize_loss_plot
 
 from detectron2.modeling import build_model
 from params import get_parser
 from data_prep.cattolica_utils import select_dataset
+from dataviz import load_json_arr
+
+import neptune.new as neptune
+
 
 def main():
 
     parser = get_parser()
     args_dict, unknown = parser.parse_known_args()
 
+    #Logging on Neptune
+    logger = logging.getLogger("detectron2")
+    run = neptune.init_run(project='AIRLab/agri-robotics-grape-segmentation',
+                           mode='async',  # use 'debug' to turn off logging, 'async' otherwise
+                           name='scratch_mask_rcnn_R_50_FPN_3x_gn_%s_%s' % (args_dict.dataset, 'train'),
+                           tags=['SFT', ''])
+
     #params
     variety = args_dict.var  # grape variety
     dtrain_name = args_dict.dataset + '_train_%s' % variety
     dval_name = args_dict.dataset + '_val_%s' % variety
+
 
     if args_dict.dataset== 'cattolica22':
         #select subset of data based on variety, viewpoint and defoliation
@@ -48,6 +61,28 @@ def main():
     custom_cfg = args_dict.model_cfg #custom config in our detectron2 fork
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
 
+    # ------ NEPTUNE LOGGING ------
+
+    # Log fixed parameters in Neptune
+    PARAMS = {'dataset_train': cfg.DATASETS.TRAIN,
+              'dataset_test': cfg.DATASETS.TEST,
+              'dataloader_num_workers': cfg.DATALOADER.NUM_WORKERS,
+              'freeze_at': cfg.MODEL.BACKBONE.FREEZE_AT,
+              'batch_size_train': cfg.SOLVER.IMS_PER_BATCH,
+              'max_iter': cfg.SOLVER.MAX_ITER,
+              'base_lr': cfg.SOLVER.BASE_LR,
+              'momentum': cfg.SOLVER.MOMENTUM,
+              'weight_decay': cfg.SOLVER.WEIGHT_DECAY,
+              'steps': cfg.SOLVER.STEPS,
+              'eval_period': cfg.TEST.EVAL_PERIOD,
+              'optimizer': 'SGD',
+              'min_size_train': cfg.INPUT.MIN_SIZE_TRAIN,
+              'min_size_test': cfg.INPUT.MIN_SIZE_TEST
+              }
+
+    # Pass parameters to the Neptune run object.
+    run['cfg_parameters'] = PARAMS  # This will create a ‘parameters' directory containing the PARAMS dictionary
+
     cfg.DATASETS.TRAIN = (dtrain_name,)
     cfg.DATASETS.TEST = (dval_name,)
 
@@ -69,11 +104,18 @@ def main():
     for name, p in model.named_parameters():
         if p.requires_grad: 
             print(name)
-    total_params  = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print("No of parameters to update: %i" % total_params)
     trainer.train() #training starts here
 
-    visualize_loss_plot(cfg.OUTPUT_DIR)
+    #Log metrics on Neptune
+    experiment_metrics = load_json_arr(cfg.OUTPUT_DIR + '/metrics.json')
+
+    for x in experiment_metrics:
+        run['metrics/total_train_loss'].append(x['total_loss'])
+        run['metrics/total_val_loss'].append(x['validation_loss'])
+        run['metrics/AP50'].append(x['AP50'])
+    #visualize_loss_plot(cfg.OUTPUT_DIR)
 
 
 if __name__ == "__main__":
