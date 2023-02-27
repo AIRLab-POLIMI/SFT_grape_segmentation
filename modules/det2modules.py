@@ -164,8 +164,10 @@ class EarlyStopping(HookBase):
                 if (latest_metric > self._current_best_validation_loss):
                     self._count = self._count + 1
                     if (self._count == self._patience):
-                        raise ValueError("Early stopping at iteration %d, because patience of %d reached" % (
+                        print("Early stopping at iteration %d, because patience of %d reached" % (
                         self.trainer.iter, self._count))
+                        self.trainer.iter == self.trainer.max_iter #telling the system to stop training
+
                 else:
                     self._current_best_iteration, self._current_best_validation_loss = metric_iter, latest_metric
                     self._count = 0
@@ -178,6 +180,7 @@ class EarlyStopping(HookBase):
                 ),
                 n=2,
             )
+
 
 class Trainer(DefaultTrainer):
 
