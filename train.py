@@ -94,7 +94,7 @@ def main():
     # Pass parameters to the Neptune run object.
     run['cfg_parameters'] = PARAMS  # This will create a ‘parameters' directory containing the PARAMS dictionary
 
-    trainer = Trainer(cfg)
+    trainer = Trainer(cfg,run)
  
     trainer.resume_or_load(resume=False) 
     #Uncomment to check which parameters will be tuned

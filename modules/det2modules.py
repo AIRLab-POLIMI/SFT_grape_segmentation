@@ -104,7 +104,7 @@ class LossEvalHook(HookBase):
             losses.append(loss_batch)
         mean_loss = np.mean(losses)
         #log on Neptune
-
+        self.trainer.neptune_run['metrics/total_val_loss'].append(mean_loss)
         self.trainer.storage.put_scalar('validation_loss', mean_loss, smoothing_hint=False)
         comm.synchronize()
         return mean_loss
@@ -183,6 +183,15 @@ class EarlyStopping(HookBase):
 
 
 class Trainer(DefaultTrainer):
+
+    def __init__(self, cfg, neptune_session):
+        """
+        Args:
+            cfg (CfgNode):
+            Added logging on Neptune
+        """
+        super().__init__()
+        self.neptune_run = neptune_session
 
     def build_hooks(self):
         cfg = self.cfg.clone()
