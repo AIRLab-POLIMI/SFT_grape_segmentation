@@ -12,19 +12,11 @@ from  data_prep.wgisd_utils import init_dataset
 from  data_prep.cattolica_utils import *
 
 from params import get_parser
-import neptune.new as neptune
 
 def main():
 
     parser = get_parser()
     args_dict, unknown = parser.parse_known_args()
-
-    # Logging on Neptune
-    logger = logging.getLogger("detectron2")
-    run = neptune.init_run(project='AIRLab/agri-robotics-grape-segmentation',
-                           mode='async',  # use 'debug' to turn off logging, 'async' otherwise
-                           name='scratch_mask_rcnn_R_50_FPN_3x_gn_%s_%s' % (args_dict.dataset, 'train'),
-                           tags=['SFT', ''])
 
     #Init test set
     variety = args_dict.var  # grape variety
@@ -55,19 +47,6 @@ def main():
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
     cfg.OUTPUT_DIR = args_dict.out_dir + "%s" % variety
 
-    # ------ NEPTUNE LOGGING ------
-
-    # Log fixed parameters in Neptune
-    # Tuned parameters (with Optuna) are commented out
-    PARAMS = {'dataset_test': cfg.DATASETS.TEST,
-              'dataloader_num_workers': cfg.DATALOADER.NUM_WORKERS,
-              'freeze_at': cfg.MODEL.BACKBONE.FREEZE_AT,
-              'eval_period': cfg.TEST.EVAL_PERIOD,
-              'min_size_test': cfg.INPUT.MIN_SIZE_TEST
-              }
-
-    # Pass parameters to the Neptune run object.
-    run['cfg_parameters'] = PARAMS  # This will create a ‘parameters' directory containing the PARAMS dictionary
 
     cfg_test = cfg
     cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") #'../data/models_ceruti_final/split_80/model_RGB.pth' 
@@ -85,9 +64,6 @@ def main():
     test_loader = build_detection_test_loader(cfg_test, dtest_name, test_mapper)
     results = inference_on_dataset(predictor.model, test_loader, [evaluator,evaluator_cstm])
     print(results)
-    run['metrics/AP_segm_test'].log(results['segm']['AP'])
-    run['metrics/AP50_segm_test'].log(results['segm']['AP50'])
-    run['metrics/AP75_segm_test'].log(results['segm']['AP75'])
 
 
 if __name__ == "__main__":
