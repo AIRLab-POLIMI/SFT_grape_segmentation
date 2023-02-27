@@ -22,6 +22,8 @@ import copy
 
 patience = 30
 
+
+
 class Mapper(DatasetMapper):
 
     def __call__(self, dataset_dict):
@@ -101,6 +103,8 @@ class LossEvalHook(HookBase):
             loss_batch = self._get_loss(inputs)
             losses.append(loss_batch)
         mean_loss = np.mean(losses)
+        #log on Neptune
+
         self.trainer.storage.put_scalar('validation_loss', mean_loss, smoothing_hint=False)
         comm.synchronize()
         return mean_loss
@@ -228,7 +232,7 @@ class Trainer(DefaultTrainer):
             ret.append(hooks.PeriodicWriter(self.build_writers(), period=39))
 
         # append our EarlyStopping Hook in order to stop computation if the patience is reached (patience is 25 * validation period )
-        # ret.append(EarlyStopping(self.cfg, patience))
+        ret.append(EarlyStopping(self.cfg, patience))
 
         return ret
 
