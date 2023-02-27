@@ -109,17 +109,6 @@ def main():
     trainer.train() #training starts here
 
     #Log metrics on Neptune
-    experiment_metrics = load_json_arr(cfg.OUTPUT_DIR + '/metrics.json')
-
-    for x in experiment_metrics:
-        if 'total_loss' in x.keys(): #training loss
-            run['metrics/total_train_loss'].append(x['total_loss'])
-        if 'validation_loss' in x.keys(): #validation metrics
-            #run['metrics/total_val_loss'].append(x['validation_loss'])
-            run['metrics/AP50'].append(x['segm/AP50'])
-            run['metrics/AP75'].append(x['segm/AP75'])
-            run['metrics/AP50'].append(x['segm/AP'])
-
     #visualize_loss_plot(cfg.OUTPUT_DIR)
 
 

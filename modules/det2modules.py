@@ -103,8 +103,15 @@ class LossEvalHook(HookBase):
             loss_batch = self._get_loss(inputs)
             losses.append(loss_batch)
         mean_loss = np.mean(losses)
-        #log on Neptune
+        ##### log on Neptune   ######
+        metrics = self.trainer.storage.latest() #find metrics at latest iter
+        val, _ = metrics["total_loss"]
+        AP, AP50, AP75 = metrics["segm/AP"], metrics["segm/AP50"], metrics["segm/AP75"]
+        self.trainer.neptune_run['metrics/total_train_loss'].append(val)
         self.trainer.neptune_run['metrics/total_val_loss'].append(mean_loss)
+        self.trainer.neptune_run['metrics/AP'].append(AP)
+        self.trainer.neptune_run['metrics/AP50'].append(AP50)
+        self.trainer.neptune_run['metrics/AP75'].append(AP75)
         self.trainer.storage.put_scalar('validation_loss', mean_loss, smoothing_hint=False)
         comm.synchronize()
         return mean_loss
