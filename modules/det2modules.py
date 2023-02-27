@@ -190,7 +190,7 @@ class Trainer(DefaultTrainer):
             cfg (CfgNode):
             Added logging on Neptune
         """
-        super().__init__()
+        super().__init__(cfg)
         self.neptune_run = neptune_session
 
     def build_hooks(self):
