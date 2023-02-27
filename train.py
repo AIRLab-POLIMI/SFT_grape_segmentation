@@ -26,7 +26,7 @@ def main():
     run = neptune.init_run(project='AIRLab/agri-robotics-grape-segmentation',
                            mode='async',  # use 'debug' to turn off logging, 'async' otherwise
                            name='scratch_mask_rcnn_R_50_FPN_3x_gn_%s_%s' % (args_dict.dataset, 'train'),
-                           tags=['SFT', ''])
+                           tags=['tuneALL', 'cattolica2022', 'red_globe', 'view45', 'defoliation'])
 
     #params
     variety = args_dict.var  # grape variety
@@ -61,6 +61,17 @@ def main():
     custom_cfg = args_dict.model_cfg #custom config in our detectron2 fork
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
 
+    cfg.DATASETS.TRAIN = (dtrain_name,)
+    cfg.DATASETS.TEST = (dval_name,)
+
+    cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s" % (args_dict.dataset, variety)
+
+    os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+    
+    if args_dict.weights is not None:
+        cfg.MODEL.WEIGHTS = args_dict.weights #'../data/models_ceruti_final/split_80/model_RGB.pth'
+        #otherwise, model is trained without adding pre-trained weights
+
     # ------ NEPTUNE LOGGING ------
 
     # Log fixed parameters in Neptune
@@ -83,17 +94,6 @@ def main():
     # Pass parameters to the Neptune run object.
     run['cfg_parameters'] = PARAMS  # This will create a ‘parameters' directory containing the PARAMS dictionary
 
-    cfg.DATASETS.TRAIN = (dtrain_name,)
-    cfg.DATASETS.TEST = (dval_name,)
-
-    cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s" % (args_dict.dataset, variety)
-
-    os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
-    
-    if args_dict.weights is not None:
-        cfg.MODEL.WEIGHTS = args_dict.weights #'../data/models_ceruti_final/split_80/model_RGB.pth'
-        #otherwise, model is trained without adding pre-trained weights
-
     trainer = Trainer(cfg)
  
     trainer.resume_or_load(resume=False) 
@@ -112,9 +112,14 @@ def main():
     experiment_metrics = load_json_arr(cfg.OUTPUT_DIR + '/metrics.json')
 
     for x in experiment_metrics:
-        run['metrics/total_train_loss'].append(x['total_loss'])
-        run['metrics/total_val_loss'].append(x['validation_loss'])
-        run['metrics/AP50'].append(x['AP50'])
+        if 'total_loss' in x.keys(): #training loss
+            run['metrics/total_train_loss'].append(x['total_loss'])
+        if 'validation_loss' in x.keys(): #validation metrics
+            run['metrics/total_val_loss'].append(x['validation_loss'])
+            run['metrics/AP50'].append(x['segm/AP50'])
+            run['metrics/AP75'].append(x['segm/AP75'])
+            run['metrics/AP50'].append(x['segm/AP'])
+
     #visualize_loss_plot(cfg.OUTPUT_DIR)
 
 
