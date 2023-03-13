@@ -29,13 +29,16 @@ def split_trainval(in_path, tgt_path, r=0.8):
 
 def subset_annotations(tgt_dirname, jpath):
 
+
     with open(jpath) as inj:
         all_annotations = json.load(inj)
+    
     ann_subset = {k: {} for k in all_annotations.keys()}
     ann_subset['images'] = []
     ann_subset['annotations'] = []
 
     imglist = os.listdir(tgt_dirname)
+
 
     for d_ in all_annotations['images']:
         img_name = d_["file_name"].split('/')[-1]
@@ -43,8 +46,9 @@ def subset_annotations(tgt_dirname, jpath):
             d_["file_name"] = img_name
             ann_subset['images'].append(d_)
             img_id = d_["id"]
-            a_ = [ann for ann in all_annotations['annotations'] if ann['image_id'] == img_id][0]
-            ann_subset['annotations'].append(a_)
+            a_ = [ann for ann in all_annotations['annotations'] if ann['image_id'] == img_id]
+            if len(a_)>0:
+                ann_subset['annotations'].append(a_[0])
 
     ann_subset['categories'] = all_annotations['categories']
     ann_subset['licenses'] = all_annotations['licenses']

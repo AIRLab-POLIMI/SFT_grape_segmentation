@@ -21,7 +21,7 @@ def main():
     #Init test set
     variety = args_dict.var  # grape variety
     dtest_name = args_dict.dataset + '_test_%s' % variety
-    annp = os.path.join(args_dict.trainval_path, 'annotations/instances_default.json')
+    annp = os.path.join(args_dict.basepath, 'annotations/instances_default.json')
 
     if args_dict.dataset== 'cattolica22':
         subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
@@ -29,11 +29,11 @@ def main():
             print("No dataset with required features found")
             return
 
-        basep = os.path.join(args_dict.trainval_path, subfolder) #/path/to/vine_cvat_subset_rotated (full, non-split sets)
+        basep = os.path.join(args_dict.test_path, subfolder) #/path/to/vine_cvat_subset_rotated (full, non-split sets)
         # prep annotations for target test set
         test_ann = subset_annotations(basep, annp)
         test_annp = os.path.join(basep,"annotations.json")
-        with open(test_annp,'rb') as otf:
+        with open(test_annp,'w') as otf:
             json.dump(test_ann, otf)
         test_imgp = basep
     else:
@@ -45,7 +45,7 @@ def main():
     cfg = get_cfg()
     custom_cfg = args_dict.model_cfg  # custom config in our detectron2 fork
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
-    cfg.OUTPUT_DIR = args_dict.out_dir + "%s" % variety
+    cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s_%s" % (args_dict.dataset, "red_globe", args_dict.mode)
 
 
     cfg_test = cfg

@@ -26,7 +26,7 @@ def main():
     run = neptune.init_run(project='AIRLab/agri-robotics-grape-segmentation',
                            mode='async',  # use 'debug' to turn off logging, 'async' otherwise
                            name='scratch_mask_rcnn_R_50_FPN_3x_gn_%s_%s' % (args_dict.dataset, 'train'),
-                           tags=['tuneALL', 'cattolica2022', 'red_globe', 'view45', 'defoliation'])
+                           tags=[args_dict.mode, args_dict.dataset, args_dict.var]) #, 'view45', 'defoliation'])
 
     #params
     variety = args_dict.var  # grape variety
@@ -48,10 +48,10 @@ def main():
         val_imgs = os.path.join(basep, 'val', subfolder)
 
     else:
-        training_annp = os.path.join(args_dict.trainval_path, 'annotations.json')
-        training_imgs = os.path.join(args_dict.trainval_path, 'images')
-        val_annp = os.path.join(args_dict.trainval_path, 'val/annotations_%s.json' % variety)
-        val_imgs = os.path.join(args_dict.trainval_path, 'val/%s/' % variety)
+        training_annp = os.path.join(args_dict.trainval_path, 'training/annotations_split.json')
+        training_imgs = os.path.join(args_dict.trainval_path, 'training/images')
+        val_annp = os.path.join(args_dict.trainval_path, 'val/annotations_split.json')
+        val_imgs = os.path.join(args_dict.trainval_path, 'val/images/')
 
     _, _ = init_dataset(dtrain_name, training_annp, training_imgs, data=args_dict.dataset)
     _, _ = init_dataset(dval_name, val_annp, val_imgs, data=args_dict.dataset)
@@ -62,9 +62,9 @@ def main():
     cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
 
     cfg.DATASETS.TRAIN = (dtrain_name,)
-    cfg.DATASETS.TEST = (dval_name,)
+    cfg.DATASETS.TEST = (dval_name,) 
 
-    cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s" % (args_dict.dataset, variety)
+    cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s_%s" % (args_dict.dataset, variety, args_dict.mode)
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
