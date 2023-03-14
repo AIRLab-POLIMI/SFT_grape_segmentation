@@ -49,7 +49,7 @@ def main():
 
 
     cfg_test = cfg
-    cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") #'../data/models_ceruti_final/split_80/model_RGB.pth' 
+    cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_best_segm.pth") #'../data/models_ceruti_final/split_80/model_RGB.pth' 
     cfg_test.DATASETS.TEST = (dtest_name,)
     cfg_test.MODEL.ROI_HEADS.SCORE_THRESH_TEST = args_dict.conf_thresh
 

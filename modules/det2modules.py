@@ -13,12 +13,14 @@ import detectron2.utils.comm as comm
 from data_prep.augmentations import *
 
 import os
+import sys
 import numpy as np
 import torch
 import time
 import datetime
 import logging
 import copy
+import math
 
 patience = 30
 
@@ -106,7 +108,10 @@ class LossEvalHook(HookBase):
         ##### log on Neptune   ######
         metrics = self.trainer.storage.latest() #find metrics at latest iter
         val, _ = metrics["total_loss"]
-        AP, AP50, AP75 = metrics["segm/AP"], metrics["segm/AP50"], metrics["segm/AP75"]
+        AP, AP50, AP75 = metrics["segm/AP"][0], metrics["segm/AP50"][0], metrics["segm/AP75"][0]
+        AP = 0. if math.isnan(AP) else AP
+        AP50 = 0. if math.isnan(AP50) else AP50
+        AP75 = 0. if math.isnan(AP75) else AP75
         self.trainer.neptune_run['metrics/total_train_loss'].append(val)
         self.trainer.neptune_run['metrics/total_val_loss'].append(mean_loss)
         self.trainer.neptune_run['metrics/AP'].append(AP)
@@ -173,7 +178,8 @@ class EarlyStopping(HookBase):
                     if (self._count == self._patience):
                         print("Early stopping at iteration %d, because patience of %d reached" % (
                         self.trainer.iter, self._count))
-                        self.trainer.iter == self.trainer.max_iter #telling the system to stop training
+                        #self.trainer.iter = self.trainer.max_iter 
+                        sys.exit(0) #telling the system to stop training
 
                 else:
                     self._current_best_iteration, self._current_best_validation_loss = metric_iter, latest_metric
