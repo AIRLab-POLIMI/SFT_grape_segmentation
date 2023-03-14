@@ -25,7 +25,7 @@ def main():
     logger = logging.getLogger("detectron2")
     run = neptune.init_run(project='AIRLab/agri-robotics-grape-segmentation',
                            mode='async',  # use 'debug' to turn off logging, 'async' otherwise
-                           name='scratch_mask_rcnn_R_50_FPN_3x_gn_%s_%s' % (args_dict.dataset, 'train'),
+                           name='%s_%s' % (args_dict.model_cfg.split("/")[-1], 'pre-train'),
                            tags=[args_dict.mode, args_dict.dataset, args_dict.var, "pre-train"]) 
 
     #params

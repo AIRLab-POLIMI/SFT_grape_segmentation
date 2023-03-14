@@ -51,7 +51,7 @@ class GaussianNoise(Transform):
         return segmentation
 
     def inverse(self):
-        return AddGaussNoise()
+        return GaussianNoise()
 
 
 class PixelDropout(Transform):
