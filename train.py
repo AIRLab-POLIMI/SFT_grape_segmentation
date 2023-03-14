@@ -26,7 +26,7 @@ def main():
     run = neptune.init_run(project='AIRLab/agri-robotics-grape-segmentation',
                            mode='async',  # use 'debug' to turn off logging, 'async' otherwise
                            name='scratch_mask_rcnn_R_50_FPN_3x_gn_%s_%s' % (args_dict.dataset, 'train'),
-                           tags=[args_dict.mode, args_dict.dataset, args_dict.var]) #, 'view45', 'defoliation'])
+                           tags=[args_dict.mode, args_dict.dataset, args_dict.var, "pre-train"]) 
 
     #params
     variety = args_dict.var  # grape variety
