@@ -1,0 +1,34 @@
+#Custom config for surgical fine tuning
+_BASE_: "scratch_mask_rcnn_R_50_FPN_9x_gn.yaml" #"mask_rcnn_R_50_FPN_3x_gn.yaml"
+MODEL:
+  PIXEL_STD: [57.375, 57.12, 58.395]
+  WEIGHTS: ""
+  MASK_ON: True
+  RESNETS:
+    STRIDE_IN_1X1: False
+  BACKBONE:
+    FREEZE_AT: 0
+    SFT_AT: 2 # Freeze all but layer no., keep freeze_at to 0 if used
+  FPN:
+    FREEZE: True # if True, freeze all FPN blocks
+    JOINT_SFT: False #If True, SFT jointly FPN based on no. at SFT_AT, if SFT_AT<=1, set to False
+  ROI_HEADS:
+    FREEZE: True #if SFT_AT >0 set to True
+    NUM_CLASSES: 1
+  RPN:
+    FREEZE: True #if SFT_AT >0 set to True
+INPUT:
+  MIN_SIZE_TEST: 0
+SOLVER:
+  # 9x schedule
+  IMS_PER_BATCH: 2  #64
+  STEPS: (1920, 2160)  # last 60/4==15k and last 20/4==5k
+  MAX_ITER: 9599 #202500   # 90k * 9 / 4
+  BASE_LR: 0.01  #0.08
+  WARMUP_ITERS: 70
+  GAMMA: 0.5
+  CHECKPOINT_PERIOD: 2400
+TEST:
+  EVAL_PERIOD: 24 #2500
+# NOTE: Please refer to Rethinking ImageNet Pre-training https://arxiv.org/abs/1811.08883
+# to learn what you need for training from scratch.
