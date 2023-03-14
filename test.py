@@ -44,8 +44,8 @@ def main():
     #Load model
     cfg = get_cfg()
     custom_cfg = args_dict.model_cfg  # custom config in our detectron2 fork
-    cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
-    cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s_%s" % (args_dict.dataset, "red_globe", args_dict.mode)
+    cfg.merge_from_file(custom_cfg) #model_zoo.get_config_file(custom_cfg))
+    cfg.OUTPUT_DIR = args_dict.out_dir
 
 
     cfg_test = cfg

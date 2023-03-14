@@ -59,7 +59,7 @@ def main():
     #Load model config
     cfg = get_cfg()
     custom_cfg = args_dict.model_cfg #custom config in our detectron2 fork
-    cfg.merge_from_file(model_zoo.get_config_file(custom_cfg))
+    cfg.merge_from_file(custom_cfg)
 
     cfg.DATASETS.TRAIN = (dtrain_name,)
     cfg.DATASETS.TEST = (dval_name,) 
