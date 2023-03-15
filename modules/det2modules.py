@@ -257,6 +257,7 @@ class Trainer(DefaultTrainer):
             ret.append(hooks.PeriodicWriter(self.build_writers(), period=39))
 
         # append our EarlyStopping Hook in order to stop computation if the patience is reached (patience is 25 * validation period )
+        
         ret.append(EarlyStopping(self.cfg, patience))
 
         return ret

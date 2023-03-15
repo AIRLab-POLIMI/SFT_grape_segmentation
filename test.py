@@ -21,7 +21,6 @@ def main():
     #Init test set
     variety = args_dict.var  # grape variety
     dtest_name = args_dict.dataset + '_test_%s' % variety
-    annp = os.path.join(args_dict.basepath, 'annotations/instances_default.json')
 
     if args_dict.dataset== 'cattolica22':
         subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
@@ -31,6 +30,7 @@ def main():
 
         basep = os.path.join(args_dict.test_path, subfolder) #/path/to/vine_cvat_subset_rotated (full, non-split sets)
         # prep annotations for target test set
+        annp = os.path.join(args_dict.basepath, 'annotations/instances_default.json')
         test_ann = subset_annotations(basep, annp)
         test_annp = os.path.join(basep,"annotations.json")
         with open(test_annp,'w') as otf:
@@ -49,7 +49,7 @@ def main():
 
 
     cfg_test = cfg
-    cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_best_segm.pth") #'../data/models_ceruti_final/split_80/model_RGB.pth' 
+    cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_best_validationLoss.pth") 
     cfg_test.DATASETS.TEST = (dtest_name,)
     cfg_test.MODEL.ROI_HEADS.SCORE_THRESH_TEST = args_dict.conf_thresh
 

@@ -49,6 +49,7 @@ def main():
 
     else:
         training_annp = os.path.join(args_dict.trainval_path, 'training/annotations_split.json')
+        #training_annp = os.path.join(args_dict.trainval_path, 'training/annotations.json')
         training_imgs = os.path.join(args_dict.trainval_path, 'training/images')
         val_annp = os.path.join(args_dict.trainval_path, 'val/annotations_split.json')
         val_imgs = os.path.join(args_dict.trainval_path, 'val/images/')
