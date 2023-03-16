@@ -47,6 +47,11 @@ def main():
         val_annp = os.path.join(basep, 'val', subfolder, 'annotations.json')
         val_imgs = os.path.join(basep, 'val', subfolder)
 
+    elif args_dict.dataset== 'cattolica21':
+        training_annp = os.path.join(args_dict.trainval_path, 'annotations/annotations_train.json')
+        training_imgs = os.path.join(args_dict.trainval_path, 'train/')
+        val_annp = os.path.join(args_dict.trainval_path, 'annotations/annotations_val.json')
+        val_imgs = os.path.join(args_dict.trainval_path, 'val/')
     else:
         training_annp = os.path.join(args_dict.trainval_path, 'training/annotations_split.json')
         #training_annp = os.path.join(args_dict.trainval_path, 'training/annotations.json')
@@ -65,14 +70,10 @@ def main():
     cfg.DATASETS.TRAIN = (dtrain_name,)
     cfg.DATASETS.TEST = (dval_name,) 
 
-    cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s_%s" % (args_dict.dataset, variety, args_dict.mode)
-
+    cfg.OUTPUT_DIR = os.path.join(args_dict.out_dir, custom_cfg.split('/')[-1].replace(".yaml",""))
+    print("Results and models saved under %s" % cfg.OUTPUT_DIR)
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
-    if args_dict.weights is not None:
-        cfg.MODEL.WEIGHTS = args_dict.weights #'../data/models_ceruti_final/split_80/model_RGB.pth'
-        #otherwise, model is trained without adding pre-trained weights
-
     # ------ NEPTUNE LOGGING ------
 
     # Log fixed parameters in Neptune
