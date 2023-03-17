@@ -15,7 +15,7 @@ def get_parser():
                         help='Grape variety')
     parser.add_argument('--model_cfg', default='Misc/mask_rcnn_R_50_SFT_3x_cat22.yaml',
                         help='Path to detectron2 model config file - relative to detectron2 source code')
-    parser.add_argument('--out_dir', default='../data/',
+    parser.add_argument('--out_dir', default='../data/results',
                         help='output dir for results')
     parser.add_argument('--dataset', default='cattolica22', choices=['wgisd','cattolica21', 'cattolica22'])
     parser.add_argument('--mode', default='tunelast', help='Tag for training mode.')

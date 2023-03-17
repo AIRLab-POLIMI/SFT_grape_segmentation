@@ -36,6 +36,10 @@ def main():
         with open(test_annp,'w') as otf:
             json.dump(test_ann, otf)
         test_imgp = basep
+    elif args_dict.dataset== 'cattolica21':
+        test_annp = os.path.join(args_dict.test_path, 'annotations/annotations_test.json')
+        test_imgp = os.path.join(args_dict.test_path, 'test')
+
     else:
         test_annp = os.path.join(args_dict.test_path, 'annotations.json')
         test_imgp = os.path.join(args_dict.test_path, 'images')
@@ -49,7 +53,7 @@ def main():
 
 
     cfg_test = cfg
-    cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_best_validationLoss.pth") 
+    cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_valLoss.pth") #_best_validationLoss.pth") 
     cfg_test.DATASETS.TEST = (dtest_name,)
     cfg_test.MODEL.ROI_HEADS.SCORE_THRESH_TEST = args_dict.conf_thresh
 
