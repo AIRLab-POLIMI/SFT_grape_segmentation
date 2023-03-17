@@ -23,7 +23,7 @@ def main():
     dtest_name = args_dict.dataset + '_test_%s' % variety
 
     if args_dict.dataset== 'cattolica22':
-        subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
+        """subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
         if subfolder is None:
             print("No dataset with required features found")
             return
@@ -35,7 +35,12 @@ def main():
         test_annp = os.path.join(basep,"annotations.json")
         with open(test_annp,'w') as otf:
             json.dump(test_ann, otf)
-        test_imgp = basep
+        test_imgp = basep"""
+        test_annp = os.path.join(args_dict.test_path, 'annotations/annotations_%s.json' % args_dict.mode) #e.g., cattolica22A, cattolica22B, etc
+        test_imgp = os.path.join(args_dict.test_path, args_dict.mode) #cattolica22A, 22B, etc...
+        print(test_annp)
+        print(test_imgp)
+
     elif args_dict.dataset== 'cattolica21':
         test_annp = os.path.join(args_dict.test_path, 'annotations/annotations_test.json')
         test_imgp = os.path.join(args_dict.test_path, 'test')
@@ -43,7 +48,9 @@ def main():
     else:
         test_annp = os.path.join(args_dict.test_path, 'annotations.json')
         test_imgp = os.path.join(args_dict.test_path, 'images')
-    _,_ = init_dataset(dtest_name, test_annp, test_imgp, data=args_dict.dataset)
+    dres,metadata = init_dataset(dtest_name, test_annp, test_imgp, data=args_dict.dataset)
+    #print(metadata)
+    #print(dres)
 
     #Load model
     cfg = get_cfg()
@@ -53,14 +60,14 @@ def main():
 
 
     cfg_test = cfg
-    cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_valLoss.pth") #_best_validationLoss.pth") 
+    cfg_test.MODEL.WEIGHTS = "/data/weights/wgisd_scratch_R50_bestval.pth" #os.path.join(cfg.OUTPUT_DIR, "model_valLoss.pth") #_best_validationLoss.pth") 
     cfg_test.DATASETS.TEST = (dtest_name,)
     cfg_test.MODEL.ROI_HEADS.SCORE_THRESH_TEST = args_dict.conf_thresh
 
     #Eval on test set
-    result_path = os.path.join(cfg.OUTPUT_DIR,'cthresh_%s' % str(args_dict.conf_thresh))
+    result_path = os.path.join(cfg.OUTPUT_DIR,args_dict.mode,'cthresh_%s' % str(args_dict.conf_thresh))
     if not os.path.isdir(result_path):
-        os.mkdir(result_path) 
+        os.makedirs(result_path) 
     predictor = DefaultPredictor(cfg_test)
     evaluator = COCOEvaluator(dtest_name, ("bbox", "segm",), False, output_dir=result_path,use_fast_impl=False)
     evaluator_cstm = COCOEvaluatorCustomized(dtest_name, ("bbox", "segm",), False, output_dir=result_path,use_fast_impl=False)
