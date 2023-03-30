@@ -26,33 +26,19 @@ def main():
     run = neptune.init_run(project='AIRLab/agri-robotics-grape-segmentation',
                            mode='async',  # use 'debug' to turn off logging, 'async' otherwise
                            name='%s_%s' % (args_dict.model_cfg.split("/")[-1], 'pre-train'),
-                           tags=[args_dict.mode, args_dict.dataset, args_dict.var, "pre-train"]) 
+                           tags=[args_dict.mode, args_dict.dataset, args_dict.var]) #, "pre-train"]) 
 
     #params
     variety = args_dict.var  # grape variety
     dtrain_name = args_dict.dataset + '_train_%s' % variety
     dval_name = args_dict.dataset + '_val_%s' % variety
 
-
-    if args_dict.dataset== 'cattolica22':
-        #select subset of data based on variety, viewpoint and defoliation
-        subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
-        if subfolder is None:
-            print("No dataset with required features found")
-            return
-
-        basep = args_dict.trainval_path  # /path/to/vine_cvat_subset_rotated_split
-        training_annp = os.path.join(basep, 'train', subfolder, 'annotations.json')
-        training_imgs = os.path.join(basep, 'train', subfolder)
-        val_annp = os.path.join(basep, 'val', subfolder, 'annotations.json')
-        val_imgs = os.path.join(basep, 'val', subfolder)
-
-    elif args_dict.dataset== 'cattolica21':
+    if args_dict.dataset== 'cattolica21':
         training_annp = os.path.join(args_dict.trainval_path, 'annotations/annotations_train.json')
         training_imgs = os.path.join(args_dict.trainval_path, 'train/')
         val_annp = os.path.join(args_dict.trainval_path, 'annotations/annotations_val.json')
         val_imgs = os.path.join(args_dict.trainval_path, 'val/')
-    else:
+    else: #wgisd
         training_annp = os.path.join(args_dict.trainval_path, 'training/annotations_split.json')
         #training_annp = os.path.join(args_dict.trainval_path, 'training/annotations.json')
         training_imgs = os.path.join(args_dict.trainval_path, 'training/images')

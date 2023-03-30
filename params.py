@@ -6,9 +6,9 @@ def get_parser():
 
     parser.add_argument('--basepath', default='../data/cattolica2022_labelled/',
                         help='Base path to data')
-    parser.add_argument('--trainval_path', default='../data/cattolica2022_labelled/images/vine_cvat_subset_rotated_split',
+    parser.add_argument('--trainval_path', default='../data/red_globe_2021_07-27_09-06_train_val_test',
                         help='Path to train and val splits and annotations')
-    parser.add_argument('--test_path', default='../data/cattolica2022_labelled/images/vine_cvat_subset_rotated',
+    parser.add_argument('--test_path', default='../data/red_globe_2021_07-27_09-06_train_val_test',
                         help='Path to test splits and annotations')
     parser.add_argument('--var', default='red_globe', choices=['CDY', 'CFR', 'CSV', 'SVB', 'SYH','all',
                                                          'red_globe', 'white_ortrugo', 'cabernet_sauvignon'],
@@ -19,14 +19,10 @@ def get_parser():
                         help='output dir for results')
     parser.add_argument('--dataset', default='cattolica22', choices=['wgisd','cattolica21', 'cattolica22'])
     parser.add_argument('--mode', default='tunelast', help='Tag for training mode.')
+    parser.add_argument('--best_val_AP', action="store_true", help='If true, selects best model on val AP50 for inference.'\
+                                                                    'Otherwise (default), selects the best model based on val loss. ')
     parser.add_argument('--conf_thresh', default=0.9, type=float,
                         help='Confidence threshold for grape class on inference')
-    parser.add_argument('--pred_path', default=None,
-                        help='Path to pth file with model predictions')
-    parser.add_argument('--view', default=45, type=int,
-                        help='Degrees indicating camera viewpoint')
-    parser.add_argument('--defol', default=1, type=int, choices=[0,1,2],
-                        help='Levels of defoliation, where 0 is no defoliation')
     parser.add_argument('--weights', default=None,
                         help='Path to model weights if fine-tuning is applied')
     return parser

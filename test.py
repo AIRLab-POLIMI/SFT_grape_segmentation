@@ -23,19 +23,6 @@ def main():
     dtest_name = args_dict.dataset + '_test_%s' % variety
 
     if args_dict.dataset== 'cattolica22':
-        """subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
-        if subfolder is None:
-            print("No dataset with required features found")
-            return
-
-        basep = os.path.join(args_dict.test_path, subfolder) #/path/to/vine_cvat_subset_rotated (full, non-split sets)
-        # prep annotations for target test set
-        annp = os.path.join(args_dict.basepath, 'annotations/instances_default.json')
-        test_ann = subset_annotations(basep, annp)
-        test_annp = os.path.join(basep,"annotations.json")
-        with open(test_annp,'w') as otf:
-            json.dump(test_ann, otf)
-        test_imgp = basep"""
         test_annp = os.path.join(args_dict.test_path, 'annotations/annotations_%s.json' % args_dict.mode) #e.g., cattolica22A, cattolica22B, etc
         test_imgp = os.path.join(args_dict.test_path, args_dict.mode) #cattolica22A, 22B, etc...
         print(test_annp)
@@ -57,10 +44,14 @@ def main():
     custom_cfg = args_dict.model_cfg  # custom config in our detectron2 fork
     cfg.merge_from_file(custom_cfg) #model_zoo.get_config_file(custom_cfg))
     cfg.OUTPUT_DIR = args_dict.out_dir
-
+    #cfg.OUTPUT_DIR = os.path.join(args_dict.out_dir, custom_cfg.split('/')[-1].replace(".yaml",""))
 
     cfg_test = cfg
-    cfg_test.MODEL.WEIGHTS = "/data/weights/wgisd_scratch_R50_bestval.pth" #os.path.join(cfg.OUTPUT_DIR, "model_valLoss.pth") #_best_validationLoss.pth") 
+    if args_dict.best_val_AP:
+        cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_best_segm.pth")  #"/data/weights/wgisd_scratch_R50_bestval.pth"
+    else: 
+        cfg_test.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_valLoss.pth")   #"/data/weights/wgisd_scratch_R50_bestval.pth"
+
     cfg_test.DATASETS.TEST = (dtest_name,)
     cfg_test.MODEL.ROI_HEADS.SCORE_THRESH_TEST = args_dict.conf_thresh
 
