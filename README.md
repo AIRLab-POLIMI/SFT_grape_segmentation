@@ -14,10 +14,12 @@ and is here extended to the case of instance segmentation through Mask R-CNN mod
 
 
 ## Docker 
-We provide an extension of the [Deepo Docker image](https://hub.docker.com/r/ufoym/deepo/) for reproducing these trials.
+We provide a dockerfile under `./SFT-docker` that extends the [Deepo Docker image](https://hub.docker.com/r/ufoym/deepo/):
 
 ```
-
+#build from dockerfile 
+docker build sft-docker /path/to/Dockerfile
+docker run -t sft-docker # approx 8GB of GPU memory needed
 ```
 
 We use the [Neptune API](https://neptune.ai/) for tracking model training. 

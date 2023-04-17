@@ -4,7 +4,7 @@ FROM ufoym/deepo:latest
 RUN git clone https://github.com/AIRLab-POLIMI/detectron2_grape_DA
 WORKDIR ./detectron2_grape_DA
 RUN python -m pip install -e .
-RUN PYTHONPATH=PYTHONPATH=/usr/lib/python3.8/site-packages/:/detectron2_grape_DA
+ENV PATH=$PATH:/detectron2_grape_DA PYTHONPATH=/usr/lib/python3.8/site-packages/:/detectron2_grape_DA
 
 #Clone code for Surgical Fine-Tuning (SFT)
 WORKDIR /
