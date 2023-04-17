@@ -34,7 +34,7 @@ def main():
     dval_name = args_dict.dataset + '_val_%s' % variety
 
 
-    if args_dict.dataset== 'cattolica22':
+    if args_dict.dataset== 'vinepics22':
         #select subset of data based on variety, viewpoint and defoliation
         subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
         if subfolder is None:
@@ -64,7 +64,7 @@ def main():
     cfg.DATASETS.TRAIN = (dtrain_name,)
     cfg.DATASETS.TEST = (dval_name,) 
 
-    cfg.OUTPUT_DIR = args_dict.out_dir +"_%s_%s_%s" % (args_dict.dataset, variety, args_dict.mode)
+    cfg.OUTPUT_DIR = os.path.join(args_dict.out_dir,"%s_%s" % (args_dict.dataset, args_dict.mode))
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     

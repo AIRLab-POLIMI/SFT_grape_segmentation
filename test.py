@@ -23,7 +23,7 @@ def main():
     dtest_name = args_dict.dataset + '_test_%s' % variety
     annp = os.path.join(args_dict.basepath, 'annotations/instances_default.json')
 
-    if args_dict.dataset== 'cattolica22':
+    if args_dict.dataset== 'vinepics22':
         subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
         if subfolder is None:
             print("No dataset with required features found")

@@ -4,20 +4,20 @@ import argparse
 def get_parser():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--basepath', default='../data/cattolica2022_labelled/',
+    parser.add_argument('--basepath', default='./data/vinepics22/',
                         help='Base path to data')
-    parser.add_argument('--trainval_path', default='../data/cattolica2022_labelled/images/vine_cvat_subset_rotated_split',
+    parser.add_argument('--trainval_path', default='./data/vinepics21',
                         help='Path to train and val splits and annotations')
-    parser.add_argument('--test_path', default='../data/cattolica2022_labelled/images/vine_cvat_subset_rotated',
+    parser.add_argument('--test_path', default='./data/vinepics22/vinepics22R',
                         help='Path to test splits and annotations')
     parser.add_argument('--var', default='red_globe', choices=['CDY', 'CFR', 'CSV', 'SVB', 'SYH','all',
                                                          'red_globe', 'white_ortrugo', 'cabernet_sauvignon'],
                         help='Grape variety')
-    parser.add_argument('--model_cfg', default='Misc/mask_rcnn_R_50_SFT_3x_cat22.yaml',
+    parser.add_argument('--model_cfg', default='./configs/scratch_mask_rcnn_R_50_FPN_9x_gn.yaml',
                         help='Path to detectron2 model config file - relative to detectron2 source code')
-    parser.add_argument('--out_dir', default='../data/RGB_MaskRCNN_SFT_output',
+    parser.add_argument('--out_dir', default='./data/results',
                         help='output dir for results')
-    parser.add_argument('--dataset', default='cattolica22', choices=['wgisd','cattolica21', 'cattolica22'])
+    parser.add_argument('--dataset', default='vinepics22', choices=['wgisd','vinepics21', 'vinepics22'])
     parser.add_argument('--mode', default='tunelast', help='Tag for training mode.')
     parser.add_argument('--conf_thresh', default=0.9, type=float,
                         help='Confidence threshold for grape class on inference')
