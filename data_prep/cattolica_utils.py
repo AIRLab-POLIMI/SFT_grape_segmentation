@@ -46,9 +46,9 @@ def subset_annotations(tgt_dirname, jpath):
             d_["file_name"] = img_name
             ann_subset['images'].append(d_)
             img_id = d_["id"]
-            a_ = [ann for ann in all_annotations['annotations'] if ann['image_id'] == img_id]
-            if len(a_)>0:
-                ann_subset['annotations'].append(a_[0])
+            for ann in all_annotations['annotations']:
+                if ann['image_id'] == img_id:
+                    ann_subset['annotations'].append(ann)
 
     ann_subset['categories'] = all_annotations['categories']
     ann_subset['licenses'] = all_annotations['licenses']

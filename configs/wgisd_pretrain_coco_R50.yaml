@@ -21,8 +21,6 @@ MODEL:
     ROI_HEADS:
         FREEZE: False # if True freeze ROI heads
         NUM_CLASSES: 1
-        SCORE_THRESH_TEST: 0.9
-        NMS_THRESH_TEST: 0.5
     FPN:
         NORM: "GN"
         FREEZE: False  # if True, applies SFT to same res block as SFT-ed backbone. Set False if only stem is SFT-ed
@@ -35,16 +33,20 @@ DATALOADER:
 
 INPUT:
   MIN_SIZE_TRAIN: (1024,)
+  MIN_SIZE_TEST: 1024
   FORMAT: "BGR"
 
 #SOLVER OPTIONS
 SOLVER:
-  MAX_ITER: 800
   IMS_PER_BATCH: 2
-  WARMUP_ITERS: 165
-  BASE_LR: 0.001
-  MOMENTUM: 0.9  
+  WARMUP_ITERS: 70
+  BASE_LR: 0.01
+  GAMMA: 0.5
+  # 3x schedule
+  STEPS: (210000, 250000)
+  MAX_ITER: 270000
+
 
 TEST:
-  EVAL_PERIOD: 20
+  EVAL_PERIOD: 220
 

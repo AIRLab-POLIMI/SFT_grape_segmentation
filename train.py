@@ -26,29 +26,21 @@ def main():
     run = neptune.init_run(project='AIRLab/agri-robotics-grape-segmentation',
                            mode='async',  # use 'debug' to turn off logging, 'async' otherwise
                            name='%s_%s' % (args_dict.model_cfg.split("/")[-1], 'pre-train'),
-                           tags=[args_dict.mode, args_dict.dataset, args_dict.var, "pre-train"]) 
+                           tags=[args_dict.mode, args_dict.dataset, args_dict.var]) #, "pre-train"]) 
 
     #params
     variety = args_dict.var  # grape variety
     dtrain_name = args_dict.dataset + '_train_%s' % variety
     dval_name = args_dict.dataset + '_val_%s' % variety
 
-
-    if args_dict.dataset== 'vinepics22':
-        #select subset of data based on variety, viewpoint and defoliation
-        subfolder = select_dataset(args_dict.var, args_dict.view, args_dict.defol)
-        if subfolder is None:
-            print("No dataset with required features found")
-            return
-
-        basep = args_dict.trainval_path  # /path/to/vine_cvat_subset_rotated_split
-        training_annp = os.path.join(basep, 'train', subfolder, 'annotations.json')
-        training_imgs = os.path.join(basep, 'train', subfolder)
-        val_annp = os.path.join(basep, 'val', subfolder, 'annotations.json')
-        val_imgs = os.path.join(basep, 'val', subfolder)
-
-    else:
+    if args_dict.dataset== 'vinepics21':
+        training_annp = os.path.join(args_dict.trainval_path, 'annotations/annotations_train.json')
+        training_imgs = os.path.join(args_dict.trainval_path, 'train/')
+        val_annp = os.path.join(args_dict.trainval_path, 'annotations/annotations_val.json')
+        val_imgs = os.path.join(args_dict.trainval_path, 'val/')
+    else: #wgisd
         training_annp = os.path.join(args_dict.trainval_path, 'training/annotations_split.json')
+        #training_annp = os.path.join(args_dict.trainval_path, 'training/annotations.json')
         training_imgs = os.path.join(args_dict.trainval_path, 'training/images')
         val_annp = os.path.join(args_dict.trainval_path, 'val/annotations_split.json')
         val_imgs = os.path.join(args_dict.trainval_path, 'val/images/')
@@ -62,16 +54,13 @@ def main():
     cfg.merge_from_file(custom_cfg)
 
     cfg.DATASETS.TRAIN = (dtrain_name,)
-    cfg.DATASETS.TEST = (dval_name,) 
+    cfg.DATASETS.TEST = (dval_name,)
 
-    cfg.OUTPUT_DIR = os.path.join(args_dict.out_dir,"%s_%s" % (args_dict.dataset, args_dict.mode))
+    cfg.OUTPUT_DIR = os.path.join(args_dict.out_dir, custom_cfg.split('/')[-1].replace(".yaml",""))
+    print("Results and models saved under %s" % cfg.OUTPUT_DIR)
 
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     
-    if args_dict.weights is not None:
-        cfg.MODEL.WEIGHTS = args_dict.weights #'../data/models_ceruti_final/split_80/model_RGB.pth'
-        #otherwise, model is trained without adding pre-trained weights
-
     # ------ NEPTUNE LOGGING ------
 
     # Log fixed parameters in Neptune
